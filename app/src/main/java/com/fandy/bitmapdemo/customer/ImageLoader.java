@@ -68,7 +68,9 @@ public class ImageLoader {
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUN_POOL_SIZE, KEEP_ALIVE
             , TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), sThreadFactory);
 
-
+    /**
+     * 创建handler
+     */
     private Handler mMainHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -82,8 +84,16 @@ public class ImageLoader {
         }
     };
 
+    /**
+     * 初始化过程
+     *
+     * @param context
+     */
     public ImageLoader(Context context) {
         mContext = context.getApplicationContext();
+        /**
+         * 初始化内存缓存的代码
+         */
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         int cacheSize = maxMemory / 8;//缓存大小为最大可用内存的1/8;
         //转换成kb单位
@@ -93,13 +103,19 @@ public class ImageLoader {
                 return bitmap.getRowBytes() * bitmap.getHeight() / 1024;//转换成kb单位
             }
         };
-        File diskCacheDir = getDiskCacheDir(mContext, "bitmap");
 
+        /**
+         * 初始化磁盘缓存的代码
+         */
+        File diskCacheDir = getDiskCacheDir(mContext, "bitmap");
+        /**
+         * 不存在,就创建一个
+         */
         if (!diskCacheDir.exists()) {
             diskCacheDir.mkdirs();
         }
 
-        if (getUsableSpace(diskCacheDir) > DISK_CACHE_SIZE) {
+        if (getUsableSpace(diskCacheDir) > DISK_CACHE_SIZE) {//磁盘缓存大小,50M
             try {
                 mDiskLruCache = DiskLruCache.open(diskCacheDir, 1, 1, DISK_CACHE_SIZE);
                 mIsDiskLruCacheCreated = true;
@@ -164,7 +180,7 @@ public class ImageLoader {
     }
 
     /**
-     * 网络服务器中加载图片资源
+     * 磁盘缓存的操作
      *
      * @param url
      * @param reqWidth
@@ -310,12 +326,14 @@ public class ImageLoader {
      * @return
      */
     public Bitmap loadBitmap(String uri, int reqWidth, int reqHeight) {
+        //先读取内存缓存
         Bitmap bitmap = loadBitmapFromMemCache(uri);
         if (bitmap != null) {
             return bitmap;
         }
 
         try {
+            //读取磁盘缓存
             bitmap = loadBitmapFromDiskCache(uri, reqWidth, reqHeight);
             if (bitmap != null) {
                 return bitmap;

@@ -115,6 +115,7 @@ public class ImageLoader {
             diskCacheDir.mkdirs();
         }
 
+        //当前可用磁盘空间的大小大于磁盘缓存大小的情况下
         if (getUsableSpace(diskCacheDir) > DISK_CACHE_SIZE) {//磁盘缓存大小,50M
             try {
                 mDiskLruCache = DiskLruCache.open(diskCacheDir, 1, 1, DISK_CACHE_SIZE);

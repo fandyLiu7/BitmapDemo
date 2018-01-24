@@ -1,7 +1,9 @@
 package com.fandy.bitmapdemo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -36,5 +38,10 @@ public class MainActivity extends Activity {
         List<String> urls = Arrays.asList(imageUrls);
         ImageAdapter adapter = new ImageAdapter(this, urls, new ImageLoader(this));
         gridView.setAdapter(adapter);
+    }
+
+    public void toNext(View view) {
+        startActivity(new Intent(MainActivity.this, SecondActivity.class
+        ));
     }
 }

@@ -7,10 +7,19 @@
     tools:context="com.fandy.bitmapdemo.MainActivity">
 
 
+    <Button
+        android:id="@+id/btn"
+        android:onClick="toNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="去第二个页面"/>
+
+
     <GridView
         android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/btn"
         android:gravity="center"
         android:horizontalSpacing="5dp"
         android:listSelector="@android:color/transparent"
